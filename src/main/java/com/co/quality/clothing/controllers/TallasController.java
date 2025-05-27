@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("qualityclothing/api/tallas")
-@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE})
+//@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE})
 public class TallasController {
 
     private final TallasService service;
