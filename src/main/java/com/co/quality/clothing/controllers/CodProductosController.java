@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("qualityclothing/api/codproductos")
-//@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE})
+@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE})
 public class CodProductosController {
 
     private final CodProductosService service;

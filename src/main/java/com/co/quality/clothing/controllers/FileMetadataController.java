@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("qualityclothing/api/imagenes")
-//@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE})
+@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE})
 public class FileMetadataController {
 
     private final FileMetadataService service;
