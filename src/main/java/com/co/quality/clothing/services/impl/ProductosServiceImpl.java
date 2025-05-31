@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +27,55 @@ public class ProductosServiceImpl implements ProductosService {
     }
 
     @Override
-    public Page<Productos> obtenerPorProducto(final Long producto, Pageable pageable) {
-        return repository.findByProductoId(producto, pageable);
+    public Page<Productos> obtenerPorProducto(final Long producto, Pageable pageable, Long categoriaId,
+                                              Long marcaId, Long calidadId, Long descuento, Long precioInicio,
+                                              Long precioFin, Long nuevo) {
+
+        Specification<Productos> spec = Specification.where((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("producto").get("id"), producto)
+        );
+
+        if (categoriaId != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("categoria").get("id"), categoriaId));
+        }
+
+        if (marcaId != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("marca").get("id"), marcaId));
+        }
+
+        if (calidadId != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("calidad").get("id"), calidadId));
+        }
+
+        if (descuento != null) {
+            if (descuento == 0) {
+                spec = spec.and((root, query, cb) ->
+                        cb.greaterThan(root.get("descuento"), 0));
+            } else if (descuento == 1) {
+                spec = spec.and((root, query, cb) ->
+                        cb.equal(root.get("descuento"), 0));
+            }
+        }
+
+        if (nuevo != null) {
+            if (nuevo == 0) {
+                spec = spec.and((root, query, cb) ->
+                        cb.equal(root.get("nuevo"), 0));
+            } else if (nuevo == 1) {
+                spec = spec.and((root, query, cb) ->
+                        cb.equal(root.get("nuevo"), 1));
+            }
+        }
+
+        if (precioInicio != null && precioFin != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.between(root.get("precio"), precioInicio, precioFin));
+        }
+
+        return repository.findAll(spec, pageable);
     }
 
     @Override

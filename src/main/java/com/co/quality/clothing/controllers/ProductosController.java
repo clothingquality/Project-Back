@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,9 +36,17 @@ public class ProductosController {
     @GetMapping("/obtener/por/producto/{producto}")
     public Page<Productos> obtenerPorProducto(@PathVariable Long producto,
         @RequestParam(defaultValue = "0") int page,
-        @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return service.obtenerPorProducto(producto, pageable);
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) Long categoriaId,
+        @RequestParam(required = false) Long marcaId,
+        @RequestParam(required = false) Long calidadId,
+        @RequestParam(required = false) Long descuento,
+        @RequestParam(required = false) Long precioInicio,
+        @RequestParam(required = false) Long precioFin,
+        @RequestParam(required = false) Long nuevo                                      ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        return service.obtenerPorProducto(producto, pageable, categoriaId, marcaId, calidadId, descuento,
+                precioInicio, precioFin, nuevo);
     }
 
     @GetMapping("/obtener/por/id/{id}")
