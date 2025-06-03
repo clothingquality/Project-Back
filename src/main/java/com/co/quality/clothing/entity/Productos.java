@@ -43,7 +43,6 @@ public class Productos {
     private Marcas marca;
 
     @ManyToMany
-    @JoinColumn(name = "tallas_productos")
     private List<Tallas> tallas;
 
     @ManyToOne
