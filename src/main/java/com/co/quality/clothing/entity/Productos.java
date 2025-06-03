@@ -48,7 +48,7 @@ public class Productos {
     @JoinColumn(name = "marca")
     private Marcas marca;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "tallas_productos")
     private List<Tallas> tallas;
 
