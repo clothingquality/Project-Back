@@ -1,14 +1,8 @@
 package com.co.quality.clothing.entity;
 
 import com.co.quality.clothing.dtos.Unidades;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -48,7 +42,7 @@ public class Productos {
     @JoinColumn(name = "marca")
     private Marcas marca;
 
-    @ManyToOne
+    @ManyToMany
     @JoinColumn(name = "tallas_productos")
     private List<Tallas> tallas;
 
