@@ -1,5 +1,6 @@
 package com.co.quality.clothing.services.impl;
 
+import com.co.quality.clothing.dtos.Categorias;
 import com.co.quality.clothing.dtos.Filtros;
 import com.co.quality.clothing.services.*;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,20 @@ public class FiltrosServiceImpl implements FiltrosService {
         }
 
         return ResponseEntity.ok(filtros);
+    }
+
+    @Override
+    public ResponseEntity<Categorias> obtenerSubCategorias() {
+        Categorias categorias = new Categorias();
+
+        categorias.setCamisetas(categoriaService.obtenerPorProducto(1L));
+        categorias.setGorras(categoriaService.obtenerPorProducto(2L));
+        categorias.setJeans(categoriaService.obtenerPorProducto(3L));
+        categorias.setSudaderas(categoriaService.obtenerPorProducto(4L));
+        categorias.setTenis(categoriaService.obtenerPorProducto(5L));
+        categorias.setAccesorios(categoriaService.obtenerPorProducto(6L));
+        categorias.setBuzos(categoriaService.obtenerPorProducto(7L));
+
+        return ResponseEntity.ok(categorias);
     }
 }

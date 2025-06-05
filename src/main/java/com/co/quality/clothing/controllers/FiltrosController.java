@@ -1,5 +1,6 @@
 package com.co.quality.clothing.controllers;
 
+import com.co.quality.clothing.dtos.Categorias;
 import com.co.quality.clothing.dtos.Filtros;
 import com.co.quality.clothing.services.FiltrosService;
 import com.co.quality.clothing.utils.Constants;
@@ -18,5 +19,10 @@ public class FiltrosController {
     @GetMapping("/obtener/por/producto/{producto}")
     public ResponseEntity<Filtros> obtenerPorProducto(@PathVariable Long producto) {
         return filtrosService.obtenerPorProducto(producto);
+    }
+
+    @GetMapping("/obtener/sub-categorias")
+    public ResponseEntity<Categorias> obtenerSubCategorias() {
+        return filtrosService.obtenerSubCategorias();
     }
 }
