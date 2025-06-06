@@ -117,9 +117,12 @@ public class ProductosServiceImpl implements ProductosService {
 
             repository.deleteById(id);
 
-            for (FileMetadata imagen : producto.getImagenes()) {
-                fileMetadataService.deleteArchivo(imagen.getId());
+            if(producto.getImagenes() != null) {
+                for (FileMetadata imagen : producto.getImagenes()) {
+                    fileMetadataService.deleteArchivo(imagen.getId());
+                }
             }
+
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
