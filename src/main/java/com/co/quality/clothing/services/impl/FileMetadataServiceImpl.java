@@ -101,7 +101,7 @@ public class FileMetadataServiceImpl implements FileMetadataService {
     }
 
     @Override
-    public FileMetadata updateArchivo(Long id, MultipartFile file) {
+    public FileMetadata updateArchivo(Long id, MultipartFile file) throws IOException {
         FileMetadata archivoExistente = fileRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Archivo no encontrado con ID: " + id));
 
@@ -118,15 +118,22 @@ public class FileMetadataServiceImpl implements FileMetadataService {
 
         // Subir nuevo archivo
         String newKey = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        byte[] fileBytes;
 
-        try {
+        if (file.getContentType() != null) {
+            fileBytes = compressImages.compressImage(file);
+        } else {
+            fileBytes = file.getBytes(); // no es imagen, dejar como está
+        }
+
+        try(InputStream inputStream = new ByteArrayInputStream(fileBytes)) {
             PutObjectRequest putRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
                 .key(newKey)
                 .contentType(file.getContentType())
                 .build();
 
-            s3Client.putObject(putRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+            s3Client.putObject(putRequest, RequestBody.fromInputStream(inputStream, fileBytes.length));
 
         } catch (IOException e) {
             throw new RuntimeException("Error al actualizar archivo en S3", e);

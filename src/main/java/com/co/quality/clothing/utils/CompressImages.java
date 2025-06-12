@@ -12,37 +12,36 @@ import java.io.InputStream;
 public class CompressImages {
 
     public byte[] compressImage(MultipartFile file) throws IOException {
-        try (InputStream input = file.getInputStream();
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+        final int maxSizeBytes = 1 * 1024 * 1024; // 1MB
+        double quality = 0.9;
+        double scale = 1.0;
+        byte[] bestAttempt = null;
 
-            Thumbnails.of(input)
-                    .scale(1.0) // no cambia el tamaño (usa .scale(0.8) si quieres reducir)
-                    .outputQuality(0.75) // entre 0 (peor calidad) y 1 (mejor calidad)
-                    .toOutputStream(outputStream);
+        while (quality >= 0.1) {
+            try (InputStream input = file.getInputStream();
+                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
 
-            byte[] compressedBytes = outputStream.toByteArray();
+                Thumbnails.of(input)
+                        .scale(scale)
+                        .outputQuality(quality)
+                        .toOutputStream(outputStream);
 
-            // Verificar si sigue siendo mayor a 1MB
-            final int maxSizeBytes = 1 * 1024 * 1024;
-            if (compressedBytes.length > maxSizeBytes) {
-                // Intentar reducir aún más, recursivamente o ajustando parámetros
-                return compressImageWithLowerQuality(file, 0.5);
+                byte[] compressedBytes = outputStream.toByteArray();
+
+                // Guardamos el intento actual (el más liviano logrado hasta ahora)
+                if (bestAttempt == null || compressedBytes.length < bestAttempt.length) {
+                    bestAttempt = compressedBytes;
+                }
+
+                if (compressedBytes.length <= maxSizeBytes) {
+                    return compressedBytes;
+                }
+
+                // Reducir calidad y resolución
+                quality -= 0.1;
+                scale -= 0.05;
             }
-
-            return compressedBytes;
         }
-    }
-
-    private byte[] compressImageWithLowerQuality(MultipartFile file, double quality) throws IOException {
-        try (InputStream input = file.getInputStream();
-             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-
-            Thumbnails.of(input)
-                    .scale(0.8)
-                    .outputQuality(quality)
-                    .toOutputStream(outputStream);
-
-            return outputStream.toByteArray();
-        }
+        return bestAttempt;
     }
 }

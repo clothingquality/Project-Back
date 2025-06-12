@@ -11,5 +11,5 @@ public interface FileMetadataService {
 
     void deleteArchivo(Long id);
 
-    FileMetadata updateArchivo(Long id, MultipartFile file);
+    FileMetadata updateArchivo(Long id, MultipartFile file) throws IOException;
 }
