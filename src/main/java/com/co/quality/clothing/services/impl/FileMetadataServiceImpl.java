@@ -3,10 +3,15 @@ package com.co.quality.clothing.services.impl;
 import com.co.quality.clothing.Repository.FileMetadataRepository;
 import com.co.quality.clothing.entity.FileMetadata;
 import com.co.quality.clothing.services.FileMetadataService;
+
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import com.co.quality.clothing.utils.CompressImages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,6 +32,8 @@ public class FileMetadataServiceImpl implements FileMetadataService {
 
     private final Region region;
 
+    private final CompressImages compressImages;
+
     @Value("${aws.s3.bucketName}")
     private String bucketName;
 
@@ -35,16 +42,24 @@ public class FileMetadataServiceImpl implements FileMetadataService {
         List<FileMetadata> archivosGuardados = new ArrayList<>();
 
         for (MultipartFile file : files) {
-            String key = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-            try {
+            String key = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            byte[] fileBytes;
+
+            if (file.getContentType() != null) {
+                fileBytes = compressImages.compressImage(file);
+            } else {
+                fileBytes = file.getBytes(); // no es imagen, dejar como está
+            }
+
+            try(InputStream inputStream = new ByteArrayInputStream(fileBytes)) {
                 PutObjectRequest putRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(key)
                     .contentType(file.getContentType())
                     .build();
 
-                s3Client.putObject(putRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
+                s3Client.putObject(putRequest, RequestBody.fromInputStream(inputStream, fileBytes.length));
 
                 String url = String.format("https://%s.s3.%s.amazonaws.com/%s",
                     bucketName, region.toString(), key);
