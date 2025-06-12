@@ -42,7 +42,7 @@ public class FileMetadataController {
     @PutMapping("/{id}")
     public ResponseEntity<FileMetadata> update(
         @PathVariable Long id,
-        @RequestParam("file") MultipartFile file) {
+        @RequestParam("file") MultipartFile file) throws IOException {
         FileMetadata fileUpdated = service.updateArchivo(id, file);
         return ResponseEntity.ok(fileUpdated);
     }
