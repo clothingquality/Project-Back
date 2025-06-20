@@ -1,9 +1,15 @@
 package com.co.quality.clothing.services.impl;
 
 import com.co.quality.clothing.Repository.CarritoRepository;
+import com.co.quality.clothing.Repository.ProductosRepository;
+import com.co.quality.clothing.dtos.Unidades;
 import com.co.quality.clothing.entity.Carrito;
+import com.co.quality.clothing.entity.Productos;
 import com.co.quality.clothing.services.CarritoService;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class CarritoServiceImpl implements CarritoService {
 
     private final CarritoRepository repository;
+
+    private final ProductosRepository productosRepository;
 
     @Override
     public List<Carrito> obtenerTodos() {
@@ -33,6 +41,24 @@ public class CarritoServiceImpl implements CarritoService {
 
     @Override
     public Carrito crear(final Carrito carrito) {
+        Optional<Productos> producto = productosRepository.findById(carrito.getIdProducto());
+
+        if (producto.isPresent()) {
+            Productos p = producto.get();
+            List<Unidades> unidades = p.getUnidades();
+
+            for (Unidades unidad : unidades) {
+                if (Objects.equals(unidad.getCodColor(), carrito.getColor())
+                        && Objects.equals(unidad.getNombreTalla(), carrito.getTalla())) {
+                    unidad.setCantidad(unidad.getCantidad() - carrito.getCantidad());
+                    break;
+                }
+            }
+
+            p.setUnidades(unidades);
+            productosRepository.save(p);
+        }
+
         return repository.save(carrito);
     }
 
