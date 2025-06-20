@@ -82,6 +82,31 @@ public class CarritoServiceImpl implements CarritoService {
     @Override
     public ResponseEntity<Void> eliminar(final Long id) {
         if (repository.existsById(id)) {
+
+            Optional<Carrito> carrito = repository.findById(id);
+
+            if (carrito.isPresent()) {
+                Carrito car = carrito.get();
+
+                Optional<Productos> producto = productosRepository.findById(car.getIdProducto());
+
+                if (producto.isPresent()) {
+                    Productos p = producto.get();
+                    List<Unidades> unidades = p.getUnidades();
+
+                    for (Unidades unidad : unidades) {
+                        if (Objects.equals(unidad.getCodColor(), car.getColor())
+                                && Objects.equals(unidad.getNombreTalla(), car.getTalla())) {
+                            unidad.setCantidad(unidad.getCantidad() + car.getCantidad());
+                            break;
+                        }
+                    }
+
+                    p.setUnidades(unidades);
+                    productosRepository.save(p);
+                }
+            }
+
             repository.deleteById(id);
             return ResponseEntity.noContent().build();
         }
