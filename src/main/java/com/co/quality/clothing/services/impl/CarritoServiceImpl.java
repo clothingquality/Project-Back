@@ -122,20 +122,29 @@ public class CarritoServiceImpl implements CarritoService {
 
     @Scheduled(fixedRate = 60000) // cada 60 segundos
     public void borrarRegistrosVencidos() {
-        logger.info("Ejecutando limpieza de carritos vencidos");
-
         LocalDateTime hace30Min = LocalDateTime.now().minusMinutes(1);
-
-        logger.info("Log minutos: {}", hace30Min);
-
         List<Carrito> vencidos = repository.findByCreatedAtBefore(hace30Min);
-
-        logger.info("Log vencidos: {}", vencidos);
 
         if (!vencidos.isEmpty()) {
             for (Carrito carrito : vencidos) {
-                logger.info("Eliminando carrito ID: {}", carrito.getId());
-                eliminar(carrito.getId());
+                Optional<Productos> producto = productosRepository.findById(carrito.getIdProducto());
+
+                if (producto.isPresent()) {
+                    Productos p = producto.get();
+                    List<Unidades> unidades = p.getUnidades();
+
+                    for (Unidades unidad : unidades) {
+                        if (Objects.equals(unidad.getCodColor(), carrito.getColor())
+                                && Objects.equals(unidad.getNombreTalla(), carrito.getTalla())) {
+                            unidad.setCantidad(unidad.getCantidad() + carrito.getCantidad());
+                            break;
+                        }
+                    }
+
+                    p.setUnidades(unidades);
+                    productosRepository.save(p);
+                }
+                repository.deleteById(carrito.getId());
             }
         }
     }
