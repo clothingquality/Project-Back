@@ -126,7 +126,11 @@ public class CarritoServiceImpl implements CarritoService {
 
         LocalDateTime hace30Min = LocalDateTime.now().minusMinutes(1);
 
+        logger.info("Log minutos: {}", hace30Min);
+
         List<Carrito> vencidos = repository.findByCreatedAtBefore(hace30Min);
+
+        logger.info("Log vencidos: {}", vencidos);
 
         if (!vencidos.isEmpty()) {
             for (Carrito carrito : vencidos) {
