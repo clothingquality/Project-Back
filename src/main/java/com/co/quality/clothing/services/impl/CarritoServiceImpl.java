@@ -122,12 +122,10 @@ public class CarritoServiceImpl implements CarritoService {
 
         List<Carrito> vencidos = repository.findByCreatedAtBefore(hace30Min);
 
-        System.out.println("Entro a eliminar: " + vencidos.get(0).getTalla());
-
-        // 2. Procesarlos uno a uno
-        for (Carrito entidad : vencidos) {
-            System.out.println("Entro el id es: " + entidad.getId());
-            eliminar(entidad.getId());
+        if (!vencidos.isEmpty()) {
+            for (Carrito entidad : vencidos) {
+                eliminar(entidad.getId());
+            }
         }
     }
 }
