@@ -14,8 +14,6 @@ import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -23,8 +21,6 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CarritoServiceImpl implements CarritoService {
-
-    private static final Logger logger = LoggerFactory.getLogger(CarritoServiceImpl.class);
 
     private final CarritoRepository repository;
 
@@ -65,6 +61,13 @@ public class CarritoServiceImpl implements CarritoService {
 
             p.setUnidades(unidades);
             productosRepository.save(p);
+        }
+
+        List<Carrito> carritoUsuarios = repository.findByUsuarioId(carrito.getUsuario().getId());
+
+        for (Carrito carritoUpdate : carritoUsuarios) {
+            carritoUpdate.setCreatedAt(carrito.getCreatedAt());
+            repository.save(carritoUpdate);
         }
 
         return repository.save(carrito);
@@ -124,20 +127,11 @@ public class CarritoServiceImpl implements CarritoService {
     @Transactional
     @Scheduled(fixedRate = 60000) // cada 60 segundos
     public void borrarRegistrosVencidos() {
-        logger.info("Ejecutando limpieza de carritos vencidos");
-
         LocalDateTime hace30Min = LocalDateTime.now().minusMinutes(1);
-
-        logger.info("Log minutos: {}", hace30Min);
-
         List<Carrito> vencidos = repository.findByCreatedAtBefore(hace30Min);
-
-        logger.info("Log vencidos: {}", vencidos);
 
         if (!vencidos.isEmpty()) {
             for (Carrito carrito : vencidos) {
-                logger.info("Eliminando carrito ID: {}", carrito.getId());
-
                 Optional<Productos> producto = productosRepository.findById(carrito.getIdProducto());
 
                 if (producto.isPresent()) {
