@@ -6,12 +6,15 @@ import com.co.quality.clothing.dtos.Unidades;
 import com.co.quality.clothing.entity.Carrito;
 import com.co.quality.clothing.entity.Productos;
 import com.co.quality.clothing.services.CarritoService;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -113,4 +116,15 @@ public class CarritoServiceImpl implements CarritoService {
         return ResponseEntity.notFound().build();
     }
 
+    @Scheduled(fixedRate = 60000) // cada 60 segundos
+    public void borrarRegistrosVencidos() {
+        LocalDateTime hace30Min = LocalDateTime.now().minusMinutes(1);
+
+        List<Carrito> vencidos = repository.findByCreatedAtBefore(hace30Min);
+
+        // 2. Procesarlos uno a uno
+        for (Carrito entidad : vencidos) {
+            eliminar(entidad.getId());
+        }
+    }
 }
