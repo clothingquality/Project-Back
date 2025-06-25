@@ -125,10 +125,10 @@ public class CarritoServiceImpl implements CarritoService {
     }
 
     @Transactional
-    @Scheduled(fixedRate = 60000) // cada 60 segundos
+    @Scheduled(fixedRate = 300000) // cada 5 minutos
     public void borrarRegistrosVencidos() {
-        LocalDateTime hace30Min = LocalDateTime.now().minusMinutes(1);
-        List<Carrito> vencidos = repository.findByCreatedAtBefore(hace30Min);
+        LocalDateTime hace15Min = LocalDateTime.now().minusMinutes(15);
+        List<Carrito> vencidos = repository.findByCreatedAtBefore(hace15Min);
 
         if (!vencidos.isEmpty()) {
             for (Carrito carrito : vencidos) {
