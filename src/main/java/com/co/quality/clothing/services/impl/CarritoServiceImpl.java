@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,6 +121,7 @@ public class CarritoServiceImpl implements CarritoService {
         return ResponseEntity.notFound().build();
     }
 
+    @Transactional
     @Scheduled(fixedRate = 60000) // cada 60 segundos
     public void borrarRegistrosVencidos() {
         logger.info("Ejecutando limpieza de carritos vencidos");
