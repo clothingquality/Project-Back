@@ -15,4 +15,6 @@ public interface CarritoRepository extends JpaRepository<Carrito, Long> {
     @Modifying
     @Transactional
     void deleteByCreatedAtBefore(LocalDateTime limite);
+
+    List<Carrito> findByCreatedAtBefore(LocalDateTime fecha);
 }
