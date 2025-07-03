@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +33,10 @@ public class PedidosController {
     public Page<Pedidos> obtenerPorProducto(
                                               @RequestParam(defaultValue = "0") int page,
                                               @RequestParam(defaultValue = "10") int size,
-                                              @RequestParam(required = false) Date fechaDesde,
-                                              @RequestParam(required = false) Date fechaHasta,
+                                              @RequestParam(required = false)
+                                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaDesde,
+                                              @RequestParam(required = false)
+                                              @DateTimeFormat(pattern = "yyyy-MM-dd") Date fechaHasta,
                                               @RequestParam(required = false) Long estado,
                                               @RequestParam(required = false) Long metodoPago) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
