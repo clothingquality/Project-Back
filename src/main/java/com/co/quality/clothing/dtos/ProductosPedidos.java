@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 public class ProductosPedidos {
     private Long cantidad;
     private String color;
+    private String codColor;
     private String nombre;
     private Long descuento;
     private Long idProducto;

@@ -26,8 +26,6 @@ public class Pedidos {
     private Date fecha;
     private Long estado;
     private Long metodoPago;
-    private BigDecimal domicilio;
-    private BigDecimal precioMercancia;
     private BigDecimal precioTotal;
 
     @ElementCollection
