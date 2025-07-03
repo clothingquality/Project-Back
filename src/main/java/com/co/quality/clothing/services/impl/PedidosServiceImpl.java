@@ -1,6 +1,7 @@
 package com.co.quality.clothing.services.impl;
 
 import com.co.quality.clothing.Repository.PedidosRepository;
+import com.co.quality.clothing.dtos.ProductosPedidos;
 import com.co.quality.clothing.entity.Pedidos;
 import com.co.quality.clothing.services.PedidosService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +28,8 @@ public class PedidosServiceImpl implements PedidosService {
     }
 
     @Override
-    public Page<Pedidos> obtenerPorFiltro(Pageable pageable, Date fechaDesde, Date fechaHasta, Long estado, Long metodoPago) {
+    public Page<Pedidos> obtenerPorFiltro(Pageable pageable, Date fechaDesde, Date fechaHasta, Long estado,
+                                          Long metodoPago) {
 
         Specification<Pedidos> spec = Specification.where(null);
 
@@ -62,6 +66,24 @@ public class PedidosServiceImpl implements PedidosService {
 
     @Override
     public Pedidos crear(Pedidos pedido) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (ProductosPedidos producto : pedido.getProductos()) {
+            BigDecimal descuentoDecimal = BigDecimal.valueOf(producto.getDescuento())
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+
+            // precio * (1 - descuento)
+            BigDecimal precioConDescuento = producto.getPrecio()
+                    .multiply(BigDecimal.ONE.subtract(descuentoDecimal));
+
+            // Multiplicamos por la cantidad
+            BigDecimal subtotal = precioConDescuento
+                    .multiply(BigDecimal.valueOf(producto.getCantidad()));
+
+            total = total.add(subtotal);
+        }
+
+        pedido.setPrecioTotal(total);
         return repository.save(pedido);
     }
 
