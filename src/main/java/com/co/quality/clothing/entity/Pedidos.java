@@ -31,6 +31,8 @@ public class Pedidos {
     private String ciudadEntrega;
     private String departamentoEntrega;
     private String observacionEntrega;
+    private String email;
+    private String celular;
 
     @ElementCollection
     private List<ProductosPedidos> productos;

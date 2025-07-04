@@ -97,8 +97,8 @@ public class PedidosServiceImpl implements PedidosService {
         Pedidos responsePedido = repository.save(pedido);
 
         String cuerpoVenta = "Se creo una orden de compra con el ID: " + responsePedido.getId()
-                + " para el cliente con email: " + responsePedido.getUsuario().getEmail() + " con numero de wssp: "
-                + responsePedido.getUsuario().getCelular() + " con entrega a: " + responsePedido.getDireccionEntrega()
+                + " para el cliente con email: " + responsePedido.getEmail() + " con numero de wssp: "
+                + responsePedido.getCelular() + " con entrega a: " + responsePedido.getDireccionEntrega()
                 + " por un valor de: $" + responsePedido.getPrecioTotal();
         String asuntoVenta = "Nueva orden de compra creada con ID: " + responsePedido.getId();
 
@@ -108,7 +108,7 @@ public class PedidosServiceImpl implements PedidosService {
         String asuntoCliente = "Orden confirmada, QualityClothingCol";
 
         enviarCorreo(cuerpoVenta, asuntoVenta, email);
-        enviarCorreo(cuerpoCliente, asuntoCliente, responsePedido.getUsuario().getEmail());
+        enviarCorreo(cuerpoCliente, asuntoCliente, responsePedido.getEmail());
 
         return responsePedido;
     }
