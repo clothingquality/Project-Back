@@ -20,14 +20,9 @@ import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 @RequiredArgsConstructor
 public class PedidosServiceImpl implements PedidosService {
-
-    private static final Logger logger = LoggerFactory.getLogger(PedidosServiceImpl.class);
 
     private final PedidosRepository repository;
 
@@ -36,9 +31,6 @@ public class PedidosServiceImpl implements PedidosService {
 
     @Value("${spring.mail.username}")
     private String email;
-
-    @Value("${spring.mail.password}")
-    private String pass;
 
     @Override
     public List<Pedidos> obtenerTodos() {
@@ -114,9 +106,6 @@ public class PedidosServiceImpl implements PedidosService {
                 "Estaremos revisando el pedido y nos contactaremos contigo lo antes posible para confirmar todo, " +
                 "Gracias por confiar en QualityClothing!!";
         String asuntoCliente = "Orden confirmada, QualityClothingCol";
-
-        logger.info("Correo: {}", email);
-        logger.info("Contrasena: {}", pass);
 
         enviarCorreo(cuerpoVenta, asuntoVenta, email);
         enviarCorreo(cuerpoCliente, asuntoCliente, responsePedido.getUsuario().getEmail());
