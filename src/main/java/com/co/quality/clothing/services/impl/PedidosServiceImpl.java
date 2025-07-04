@@ -5,10 +5,14 @@ import com.co.quality.clothing.dtos.ProductosPedidos;
 import com.co.quality.clothing.entity.Pedidos;
 import com.co.quality.clothing.services.PedidosService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,6 +25,12 @@ import java.util.List;
 public class PedidosServiceImpl implements PedidosService {
 
     private final PedidosRepository repository;
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String email;
 
     @Override
     public List<Pedidos> obtenerTodos() {
@@ -84,7 +94,23 @@ public class PedidosServiceImpl implements PedidosService {
         }
 
         pedido.setPrecioTotal(total);
-        return repository.save(pedido);
+        Pedidos responsePedido = repository.save(pedido);
+
+        String cuerpoVenta = "Se creo una orden de compra con el ID: " + responsePedido.getId()
+                + " para el cliente con email: " + responsePedido.getUsuario().getEmail() + " con numero de wssp: "
+                + responsePedido.getUsuario().getCelular() + " con entrega a: " + responsePedido.getDireccionEntrega()
+                + " por un valor de: $" + responsePedido.getPrecioTotal();
+        String asuntoVenta = "Nueva orden de compra creada con ID: " + responsePedido.getId();
+
+        String cuerpoCliente = "Tu orden ha sido creada con exito, " +
+                "Estaremos revisando el pedido y nos contactaremos contigo lo antes posible para confirmar todo, " +
+                "Gracias por confiar en QualityClothing!!";
+        String asuntoCliente = "Orden confirmada, QualityClothingCol";
+
+        enviarCorreo(cuerpoVenta, asuntoVenta, email);
+        enviarCorreo(cuerpoCliente, asuntoCliente, responsePedido.getUsuario().getEmail());
+
+        return responsePedido;
     }
 
     @Override
@@ -104,5 +130,15 @@ public class PedidosServiceImpl implements PedidosService {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    public void enviarCorreo(String cuerpo, String asunto, String emailTo) {
+        SimpleMailMessage mensaje = new SimpleMailMessage();
+        mensaje.setTo(emailTo);
+        mensaje.setSubject(asunto);
+        mensaje.setText(cuerpo);
+        mensaje.setFrom(email);
+
+        mailSender.send(mensaje);
     }
 }

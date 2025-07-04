@@ -27,6 +27,10 @@ public class Pedidos {
     private Long estado;
     private Long metodoPago;
     private BigDecimal precioTotal;
+    private String direccionEntrega;
+    private String ciudadEntrega;
+    private String departamentoEntrega;
+    private String observacionEntrega;
 
     @ElementCollection
     private List<ProductosPedidos> productos;
