@@ -4,6 +4,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,11 +18,19 @@ public class CompressImages {
         double scale = 1.0;
         byte[] bestAttempt = null;
 
-        while (quality >= 0.1) {
-            try (InputStream input = file.getInputStream();
-                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+        // Redimensionar la imagen original a tamaño máximo permitido
+        BufferedImage resizedImage;
+        try (InputStream inputStream = file.getInputStream()) {
+            resizedImage = Thumbnails.of(inputStream)
+                    .size(800, 800)
+                    .asBufferedImage();
+        }
 
-                Thumbnails.of(input)
+        // Bajar peso de imagen
+        while (quality >= 0.1) {
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+                Thumbnails.of(resizedImage)
                         .scale(scale)
                         .outputQuality(quality)
                         .toOutputStream(outputStream);
