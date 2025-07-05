@@ -44,10 +44,11 @@ public class ProductosController {
         @RequestParam(required = false) Long descuento,
         @RequestParam(required = false) Long precioInicio,
         @RequestParam(required = false) Long precioFin,
-        @RequestParam(required = false) Long nuevo                                      ) {
+        @RequestParam(required = false) Long nuevo,
+        @RequestParam(required = false) Long productoId) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
         return service.obtenerPorProducto(producto, pageable, categoriaId, marcaId, calidadId, descuento,
-                precioInicio, precioFin, nuevo);
+                precioInicio, precioFin, nuevo, productoId);
     }
 
     @GetMapping("/obtener/por/id/{id}")

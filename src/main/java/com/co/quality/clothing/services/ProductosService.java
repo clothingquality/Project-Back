@@ -10,7 +10,8 @@ public interface ProductosService {
     List<Productos> obtenerTodos();
 
     Page<Productos> obtenerPorProducto(Long producto, Pageable pageable, Long categoriaId, Long marcaId,
-                                       Long calidadId, Long descuento, Long precioInicio, Long precioFin, Long nuevo);
+                                       Long calidadId, Long descuento, Long precioInicio, Long precioFin, Long nuevo,
+                                       Long productoId);
 
     ResponseEntity<Productos> obtenerPorId(Long id);
 

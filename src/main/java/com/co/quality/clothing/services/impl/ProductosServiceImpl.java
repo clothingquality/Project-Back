@@ -29,7 +29,7 @@ public class ProductosServiceImpl implements ProductosService {
     @Override
     public Page<Productos> obtenerPorProducto(final Long producto, Pageable pageable, Long categoriaId,
                                               Long marcaId, Long calidadId, Long descuento, Long precioInicio,
-                                              Long precioFin, Long nuevo) {
+                                              Long precioFin, Long nuevo, Long productoId) {
 
         Specification<Productos> spec = Specification.where((root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("producto").get("id"), producto)
@@ -68,6 +68,11 @@ public class ProductosServiceImpl implements ProductosService {
                 spec = spec.and((root, query, cb) ->
                         cb.equal(root.get("nuevo"), 1));
             }
+        }
+
+        if (productoId != null) {
+            spec = spec.and((root, query, cb) ->
+                    cb.equal(root.get("id"), productoId));
         }
 
         if (precioInicio != null && precioFin != null) {
