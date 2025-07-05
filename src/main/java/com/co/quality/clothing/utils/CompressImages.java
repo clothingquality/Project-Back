@@ -35,6 +35,7 @@ public class CompressImages {
                 Thumbnails.of(resizedImage)
                         .scale(scale)
                         .outputQuality(quality)
+                        .outputFormat("jpg")
                         .toOutputStream(outputStream);
 
                 byte[] compressedBytes = outputStream.toByteArray();
