@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 @Component
 public class CompressImages {
@@ -19,9 +19,11 @@ public class CompressImages {
         byte[] bestAttempt = null;
 
         // Redimensionar la imagen original a tamaño máximo permitido
+        byte[] originalBytes = file.getBytes();
         BufferedImage resizedImage;
-        try (InputStream inputStream = file.getInputStream()) {
-            resizedImage = Thumbnails.of(inputStream)
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(originalBytes)) {
+            resizedImage = Thumbnails.of(bais)
                     .size(800, 800)
                     .asBufferedImage();
         }
