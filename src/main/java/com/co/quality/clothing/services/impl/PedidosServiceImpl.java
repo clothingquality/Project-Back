@@ -1,5 +1,6 @@
 package com.co.quality.clothing.services.impl;
 
+import com.co.quality.clothing.Repository.CarritoRepository;
 import com.co.quality.clothing.Repository.PedidosRepository;
 import com.co.quality.clothing.dtos.ProductosPedidos;
 import com.co.quality.clothing.entity.Pedidos;
@@ -25,6 +26,8 @@ import java.util.List;
 public class PedidosServiceImpl implements PedidosService {
 
     private final PedidosRepository repository;
+
+    private final CarritoRepository carritoRepository;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -91,6 +94,10 @@ public class PedidosServiceImpl implements PedidosService {
                     .multiply(BigDecimal.valueOf(producto.getCantidad()));
 
             total = total.add(subtotal);
+
+            if (carritoRepository.existsById(producto.getIdCarrito())) {
+                carritoRepository.deleteById(producto.getIdCarrito());
+            }
         }
 
         pedido.setPrecioTotal(total);
