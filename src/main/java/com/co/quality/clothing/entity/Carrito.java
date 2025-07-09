@@ -23,6 +23,7 @@ public class Carrito {
     private Long cantidad;
     private String color;
     private String nombre;
+    private String nombreColor;
     private Long descuento;
     private Long idProducto;
     private BigDecimal precio;

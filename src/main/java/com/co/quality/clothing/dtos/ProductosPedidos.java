@@ -20,6 +20,7 @@ public class ProductosPedidos {
     private String nombre;
     private Long descuento;
     private Long idProducto;
+    private Long idCarrito;
     private BigDecimal precio;
     private String imagen;
     private String talla;

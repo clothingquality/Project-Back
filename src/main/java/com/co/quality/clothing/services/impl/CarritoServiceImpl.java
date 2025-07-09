@@ -85,6 +85,7 @@ public class CarritoServiceImpl implements CarritoService {
                 carrito.setPrecio(datos.getPrecio());
                 carrito.setImagen(datos.getImagen());
                 carrito.setTalla(datos.getTalla());
+                carrito.setNombreColor(datos.getNombreColor());
                 return ResponseEntity.ok(repository.save(carrito));
             })
             .orElse(ResponseEntity.notFound().build());
@@ -127,7 +128,7 @@ public class CarritoServiceImpl implements CarritoService {
     @Transactional
     @Scheduled(fixedRate = 60000)
     public void borrarRegistrosVencidos() {
-        LocalDateTime hace15Min = LocalDateTime.now().minusMinutes(15);
+        LocalDateTime hace15Min = LocalDateTime.now().minusMinutes(30);
         List<Carrito> vencidos = repository.findByCreatedAtBefore(hace15Min);
 
         if (!vencidos.isEmpty()) {
