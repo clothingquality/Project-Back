@@ -41,9 +41,9 @@ public class MercadoPagoController {
                     .build();
 
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                    .success("http://127.0.0.1:5500/pago-exitoso")
-                    .failure("http://127.0.0.1:5500/pago-fallido")
-                    .pending("http://127.0.0.1:5500/pago-pendiente")
+                    .success("https://qualityclothingcol.com/pago-exitoso")
+                    .failure("https://qualityclothingcol.com/pago-fallido")
+                    .pending("https://qualityclothingcol.com/pago-pendiente")
                     .build();
 
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
