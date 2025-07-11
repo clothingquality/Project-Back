@@ -96,6 +96,13 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
+		<!-- Mercado Pago -->
+		<dependency>
+			<groupId>com.mercadopago</groupId>
+			<artifactId>sdk-java</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+
 		<!-- Spring Boot Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
