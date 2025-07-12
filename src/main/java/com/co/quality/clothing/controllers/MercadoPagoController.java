@@ -25,7 +25,6 @@ import java.util.List;
 @CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE,
         Constants.ADMIN_PAGE_PROD, Constants.USERS_PAGE_PROD})
 public class MercadoPagoController {
-
     @Value("${spring.mercadopago.access.token}")
     private String accessToken;
 
