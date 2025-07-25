@@ -2,7 +2,6 @@ package com.co.quality.clothing.controllers;
 
 import com.co.quality.clothing.entity.Pedidos;
 import com.co.quality.clothing.services.PedidosService;
-import com.co.quality.clothing.utils.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,8 +17,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("qualityclothing/api/pedidos")
-@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE,
-        Constants.ADMIN_PAGE_PROD, Constants.USERS_PAGE_PROD})
 public class PedidosController {
 
     private final PedidosService service;

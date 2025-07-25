@@ -3,11 +3,9 @@ package com.co.quality.clothing.controllers;
 import com.co.quality.clothing.dtos.InicioSesion;
 import com.co.quality.clothing.entity.Usuarios;
 import com.co.quality.clothing.services.UsuariosService;
-import com.co.quality.clothing.utils.Constants;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("qualityclothing/api/usuarios")
-@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE,
-        Constants.ADMIN_PAGE_PROD, Constants.USERS_PAGE_PROD})
 public class UsuariosController {
 
     private final UsuariosService service;

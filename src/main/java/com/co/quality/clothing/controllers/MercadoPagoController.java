@@ -1,6 +1,5 @@
 package com.co.quality.clothing.controllers;
 
-import com.co.quality.clothing.utils.Constants;
 import com.mercadopago.client.preference.PreferenceClient;
 import com.mercadopago.exceptions.MPApiException;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("qualityclothing/api/mercadopago")
-@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE,
-        Constants.ADMIN_PAGE_PROD, Constants.USERS_PAGE_PROD})
 public class MercadoPagoController {
     @Value("${spring.mercadopago.access.token}")
     private String accessToken;

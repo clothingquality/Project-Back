@@ -2,12 +2,10 @@ package com.co.quality.clothing.controllers;
 
 import com.co.quality.clothing.entity.FileMetadata;
 import com.co.quality.clothing.services.FileMetadataService;
-import com.co.quality.clothing.utils.Constants;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("qualityclothing/api/imagenes")
-@CrossOrigin(origins = { Constants.ADMIN_PAGE, Constants.USERS_PAGE,
-        Constants.ADMIN_PAGE_PROD, Constants.USERS_PAGE_PROD})
 public class FileMetadataController {
 
     private final FileMetadataService service;
