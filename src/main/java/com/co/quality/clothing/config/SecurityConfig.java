@@ -36,14 +36,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(
+        config.setAllowedOriginPatterns(List.of("*qualityclothingcol.com*",
+                "http://127.0.0.1:*", "*testsitedomainparapagina.io*"));
+        /*config.setAllowedOrigins(List.of(
                 "https://www.qualityclothingcol.com",
                 "https://www.testsitedomainparapagina.io",
                 "https://qualityclothingcol.com",
                 "https://testsitedomainparapagina.io",
                 "http://127.0.0.1:5500",
                 "http://127.0.0.1:5502"
-        ));
+        ));*/
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
