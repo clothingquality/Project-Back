@@ -36,8 +36,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("*qualityclothingcol.com*",
-                "http://127.0.0.1:*", "*testsitedomainparapagina.io*"));
+        config.setAllowedOriginPatterns(List.of("*www.qualityclothingcol.com*",
+                "http://127.0.0.1:*", "*www.testsitedomainparapagina.io*"));
         /*config.setAllowedOrigins(List.of(
                 "https://www.qualityclothingcol.com",
                 "https://www.testsitedomainparapagina.io",
