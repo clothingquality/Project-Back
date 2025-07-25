@@ -11,10 +11,10 @@ public class CorsConfig implements WebMvcConfigurer {
 
         registry.addMapping("/**")
                 .allowedOrigins(
-                        Constants.ADMIN_PAGE,
-                        Constants.USERS_PAGE,
-                        Constants.ADMIN_PAGE_PROD,
-                        Constants.USERS_PAGE_PROD
+                        "https://qualityclothingcol.com",
+                        "https://testsitedomainparapagina.io",
+                        "http://127.0.0.1:5500",
+                        "http://127.0.0.1:5502"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
