@@ -7,7 +7,7 @@ import com.co.quality.clothing.entity.Carrito;
 import com.co.quality.clothing.entity.Productos;
 import com.co.quality.clothing.services.CarritoService;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -138,7 +138,7 @@ public class CarritoServiceImpl implements CarritoService {
     @Transactional
     @Scheduled(fixedRate = 60000)
     public void borrarRegistrosVencidos() {
-        LocalDateTime hace15Min = LocalDateTime.now().minusMinutes(30);
+        ZonedDateTime hace15Min = ZonedDateTime.now().minusMinutes(30);
         List<Carrito> vencidos = repository.findByCreatedAtBefore(hace15Min);
 
         if (!vencidos.isEmpty()) {
