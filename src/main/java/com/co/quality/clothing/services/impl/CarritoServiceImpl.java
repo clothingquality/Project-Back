@@ -66,7 +66,7 @@ public class CarritoServiceImpl implements CarritoService {
         List<Carrito> carritoUsuarios = repository.findByUsuarioId(carrito.getUsuario().getId());
 
         if (carritoUsuarios != null && !carritoUsuarios.isEmpty()) {
-            carrito.setCreatedAt(carritoUsuarios.get(0).getCreatedAt());
+            carrito.setCreatedAt(carritoUsuarios.get(carritoUsuarios.size() - 1).getCreatedAt());
         }
 
         return repository.save(carrito);
