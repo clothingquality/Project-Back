@@ -72,9 +72,11 @@ public class CarritoServiceImpl implements CarritoService {
         List<Carrito> carritoUsuarios = repository.findByUsuarioId(carrito.getUsuario().getId());
 
         logger.info("Iniciando busqueda en carrito: {}", carrito.getUsuario().getId());
+        System.out.println("Iniciando busqueda en carrito: " + carrito.getUsuario().getId());
 
         if (carritoUsuarios != null && !carritoUsuarios.isEmpty()) {
             logger.info("El dato 1 del carrito es: {}", carritoUsuarios.get(0).getCreatedAt());
+            System.out.println("El dato 1 del carrito es: " + carritoUsuarios.get(0).getCreatedAt());
             carrito.setCreatedAt(carritoUsuarios.get(0).getCreatedAt());
         }
 
