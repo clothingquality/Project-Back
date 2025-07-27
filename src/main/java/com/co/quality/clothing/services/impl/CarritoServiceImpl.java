@@ -18,10 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 @Service
 @RequiredArgsConstructor
 public class CarritoServiceImpl implements CarritoService {
@@ -29,8 +25,6 @@ public class CarritoServiceImpl implements CarritoService {
     private final CarritoRepository repository;
 
     private final ProductosRepository productosRepository;
-
-    private static final Logger logger = LoggerFactory.getLogger(CarritoServiceImpl.class);
 
     @Override
     public List<Carrito> obtenerTodos() {
@@ -71,12 +65,7 @@ public class CarritoServiceImpl implements CarritoService {
 
         List<Carrito> carritoUsuarios = repository.findByUsuarioId(carrito.getUsuario().getId());
 
-        logger.info("Iniciando busqueda en carrito: {}", carrito.getUsuario().getId());
-        System.out.println("Iniciando busqueda en carrito: " + carrito.getUsuario().getId());
-
         if (carritoUsuarios != null && !carritoUsuarios.isEmpty()) {
-            logger.info("El dato 1 del carrito es: {}", carritoUsuarios.get(0).getCreatedAt());
-            System.out.println("El dato 1 del carrito es: " + carritoUsuarios.get(0).getCreatedAt());
             carrito.setCreatedAt(carritoUsuarios.get(0).getCreatedAt());
         }
 

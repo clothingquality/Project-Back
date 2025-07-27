@@ -1,6 +1,6 @@
 package com.co.quality.clothing.controllers;
 
-import com.mercadopago.client.preference.PreferenceClient;
+import com.mercadopago.client.preference.*;
 import com.mercadopago.exceptions.MPApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.mercadopago.client.preference.PreferenceItemRequest;
-import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
-import com.mercadopago.client.preference.PreferenceRequest;
 import com.mercadopago.resources.preference.Preference;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.exceptions.MPException;
@@ -42,10 +39,15 @@ public class MercadoPagoController {
                     .pending("https://qualityclothingcol.com/pago-pendiente")
                     .build();
 
+            PreferencePaymentMethodsRequest paymentMethods = PreferencePaymentMethodsRequest.builder()
+                    .installments(12)
+                    .build();
+
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(List.of(item))
                     .backUrls(backUrls)
                     .autoReturn("approved")
+                    .paymentMethods(paymentMethods)
                     .build();
 
             Preference preference = new PreferenceClient().create(preferenceRequest);
