@@ -133,8 +133,8 @@ public class PedidosServiceImpl implements PedidosService {
     public ResponseEntity<Pedidos> actualizar(Long id, Pedidos datos) {
         return repository.findById(id)
                 .map(pedido -> {
-                    if (datos.getEstado() == 3) {
-                        for (ProductosPedidos productoPedido : datos.getProductos()) {
+                    if (datos.getEstado() == 3 && pedido.getProductos() != null) {
+                        for (ProductosPedidos productoPedido : pedido.getProductos()) {
                             Optional<Productos> producto = productosRepository.findById(productoPedido.getIdProducto());
 
                             if (producto.isPresent()) {
