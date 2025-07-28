@@ -2,9 +2,13 @@ package com.co.quality.clothing.services.impl;
 
 import com.co.quality.clothing.Repository.CarritoRepository;
 import com.co.quality.clothing.Repository.PedidosRepository;
+import com.co.quality.clothing.Repository.ProductosRepository;
 import com.co.quality.clothing.dtos.ProductosPedidos;
+import com.co.quality.clothing.dtos.Unidades;
 import com.co.quality.clothing.entity.Pedidos;
+import com.co.quality.clothing.entity.Productos;
 import com.co.quality.clothing.services.PedidosService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +24,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +34,8 @@ public class PedidosServiceImpl implements PedidosService {
     private final PedidosRepository repository;
 
     private final CarritoRepository carritoRepository;
+
+    private final ProductosRepository productosRepository;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -121,9 +129,31 @@ public class PedidosServiceImpl implements PedidosService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Pedidos> actualizar(Long id, Pedidos datos) {
         return repository.findById(id)
                 .map(pedido -> {
+                    if (datos.getEstado() == 3) {
+                        for (ProductosPedidos productoPedido : datos.getProductos()) {
+                            Optional<Productos> producto = productosRepository.findById(productoPedido.getIdProducto());
+
+                            if (producto.isPresent()) {
+                                Productos p = producto.get();
+                                List<Unidades> unidades = p.getUnidades();
+
+                                for (Unidades unidad : unidades) {
+                                    if (Objects.equals(unidad.getCodColor(), productoPedido.getCodColor())
+                                            && Objects.equals(unidad.getNombreTalla(), productoPedido.getTalla())) {
+                                        unidad.setCantidad(unidad.getCantidad() + productoPedido.getCantidad());
+                                        break;
+                                    }
+                                }
+
+                                p.setUnidades(unidades);
+                                productosRepository.save(p);
+                            }
+                        }
+                    }
                     pedido.setEstado(datos.getEstado());
                     return ResponseEntity.ok(repository.save(pedido));
                 })

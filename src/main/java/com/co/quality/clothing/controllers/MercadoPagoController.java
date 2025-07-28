@@ -34,9 +34,9 @@ public class MercadoPagoController {
                     .build();
 
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                    .success("https://qualityclothingcol.com/pago-exitoso")
-                    .failure("https://qualityclothingcol.com/pago-fallido")
-                    .pending("https://qualityclothingcol.com/pago-pendiente")
+                    .success("https://qualityclothingcol.com/pago-exitoso.html")
+                    .failure("https://qualityclothingcol.com/pago-fallido.html")
+                    .pending("https://qualityclothingcol.com/pago-pendiente.html")
                     .build();
 
             PreferencePaymentMethodsRequest paymentMethods = PreferencePaymentMethodsRequest.builder()
