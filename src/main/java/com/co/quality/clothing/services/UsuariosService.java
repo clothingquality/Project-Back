@@ -17,4 +17,8 @@ public interface UsuariosService {
     ResponseEntity<Void> eliminar(Long id);
 
     ResponseEntity<?> login(InicioSesion request);
+
+    String createResetToken(String email);
+
+    void resetPassword(String token, String newPassword);
 }

@@ -1,13 +1,23 @@
 package com.co.quality.clothing.services.impl;
 
+import com.co.quality.clothing.Repository.PasswordResetTokenRepository;
 import com.co.quality.clothing.Repository.UsuarioRepository;
 import com.co.quality.clothing.dtos.InicioSesion;
+import com.co.quality.clothing.entity.PasswordResetToken;
 import com.co.quality.clothing.entity.Usuarios;
+import com.co.quality.clothing.exceptions.UsuarioNoEncontradoException;
 import com.co.quality.clothing.services.UsuariosService;
+
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +26,13 @@ import org.springframework.stereotype.Service;
 public class UsuariosServiceImpl implements UsuariosService {
 
     private final UsuarioRepository repository;
+    private final PasswordResetTokenRepository tokenRepository;
+
+    @Value("${spring.mail.username}")
+    private String email;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -70,5 +87,58 @@ public class UsuariosServiceImpl implements UsuariosService {
             }
 
         return ResponseEntity.status(401).body("Credenciales inválidas o usuario no existe");
+    }
+
+    public String createResetToken(String email) {
+
+        Usuarios usuario = repository.findByEmail(email);
+        if (usuario == null) {
+            throw new UsuarioNoEncontradoException("Usuario con email " + email + " no existe");
+        }
+
+        String token = UUID.randomUUID().toString();
+
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setToken(token);
+        resetToken.setEmail(email);
+        resetToken.setExpirationDate(LocalDateTime.now().plusMinutes(10));
+
+        tokenRepository.save(resetToken);
+
+        String body = "Link cambio contraseña: https://qualityclothingcol.com/changepass.html?token=" + token;
+        String affair = "Recuperar contraseña";
+
+        enviarCorreo(body, affair, email);
+
+        return token;
+    }
+
+    public void resetPassword(String token, String newPassword) {
+        PasswordResetToken resetToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new RuntimeException("Token Invalido"));
+
+        if (resetToken.getExpirationDate().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("El token expiro");
+        }
+
+        Usuarios usuario = repository.findByEmail(resetToken.getEmail());
+        if (usuario == null) {
+            throw new UsuarioNoEncontradoException("Usuario con email " + resetToken.getEmail() + " no existe");
+        }
+
+        usuario.setPassword(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode(newPassword));
+        repository.save(usuario);
+
+        tokenRepository.delete(resetToken);
+    }
+
+    public void enviarCorreo(String cuerpo, String asunto, String emailTo) {
+        SimpleMailMessage mensaje = new SimpleMailMessage();
+        mensaje.setTo(emailTo);
+        mensaje.setSubject(asunto);
+        mensaje.setText(cuerpo);
+        mensaje.setFrom(email);
+
+        mailSender.send(mensaje);
     }
 }
