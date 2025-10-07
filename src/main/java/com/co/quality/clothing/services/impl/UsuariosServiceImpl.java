@@ -28,7 +28,7 @@ public class UsuariosServiceImpl implements UsuariosService {
     private final UsuarioRepository repository;
     private final PasswordResetTokenRepository tokenRepository;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.username.set.form}")
     private String email;
 
     @Autowired

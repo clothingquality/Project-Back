@@ -40,7 +40,7 @@ public class PedidosServiceImpl implements PedidosService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring.mail.username.set.form}")
     private String email;
 
     @Override
@@ -122,7 +122,7 @@ public class PedidosServiceImpl implements PedidosService {
                 "Gracias por confiar en QualityClothing!!";
         String asuntoCliente = "Orden confirmada, QualityClothingCol";
 
-        enviarCorreo(cuerpoVenta, asuntoVenta, email);
+        enviarCorreo(cuerpoVenta, asuntoVenta, "clothingquality69@gmail.com");
         enviarCorreo(cuerpoCliente, asuntoCliente, responsePedido.getEmail());
 
         return responsePedido;
