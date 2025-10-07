@@ -8,16 +8,14 @@ import com.co.quality.clothing.dtos.Unidades;
 import com.co.quality.clothing.entity.Pedidos;
 import com.co.quality.clothing.entity.Productos;
 import com.co.quality.clothing.services.PedidosService;
+import com.co.quality.clothing.utils.EmailUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -37,11 +35,7 @@ public class PedidosServiceImpl implements PedidosService {
 
     private final ProductosRepository productosRepository;
 
-    @Autowired
-    private JavaMailSender mailSender;
-
-    @Value("${spring.mail.username.set.form}")
-    private String email;
+    private final EmailUtil emailUtil;
 
     @Override
     public List<Pedidos> obtenerTodos() {
@@ -122,8 +116,13 @@ public class PedidosServiceImpl implements PedidosService {
                 "Gracias por confiar en QualityClothing!!";
         String asuntoCliente = "Orden confirmada, QualityClothingCol";
 
-        enviarCorreo(cuerpoVenta, asuntoVenta, "clothingquality69@gmail.com");
-        enviarCorreo(cuerpoCliente, asuntoCliente, responsePedido.getEmail());
+        boolean emailSentClient = emailUtil.sendEmail(cuerpoCliente, asuntoCliente, responsePedido.getEmail());
+        boolean emailSentBusiness = emailUtil.sendEmail(cuerpoVenta, asuntoVenta,
+                "clothingquality69@gmail.com");
+
+        if (!emailSentClient || !emailSentBusiness) {
+            throw new RuntimeException("Failed to send reset email");
+        }
 
         return responsePedido;
     }
@@ -167,15 +166,5 @@ public class PedidosServiceImpl implements PedidosService {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
-    }
-
-    public void enviarCorreo(String cuerpo, String asunto, String emailTo) {
-        SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setTo(emailTo);
-        mensaje.setSubject(asunto);
-        mensaje.setText(cuerpo);
-        mensaje.setFrom(email);
-
-        mailSender.send(mensaje);
     }
 }

@@ -12,12 +12,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import com.co.quality.clothing.utils.EmailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,11 +27,7 @@ public class UsuariosServiceImpl implements UsuariosService {
     private final UsuarioRepository repository;
     private final PasswordResetTokenRepository tokenRepository;
 
-    @Value("${spring.mail.username.set.form}")
-    private String email;
-
-    @Autowired
-    private JavaMailSender mailSender;
+    private final EmailUtil emailUtil;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -108,7 +103,11 @@ public class UsuariosServiceImpl implements UsuariosService {
         String body = "Link cambio contraseña: https://qualityclothingcol.com/changepass.html?token=" + token;
         String affair = "Recuperar contraseña";
 
-        enviarCorreo(body, affair, email);
+        boolean emailSent = emailUtil.sendEmail(body, affair, email);
+
+        if (!emailSent) {
+            throw new RuntimeException("Failed to send reset email");
+        }
 
         return token;
     }
@@ -130,15 +129,5 @@ public class UsuariosServiceImpl implements UsuariosService {
         repository.save(usuario);
 
         tokenRepository.delete(resetToken);
-    }
-
-    public void enviarCorreo(String cuerpo, String asunto, String emailTo) {
-        SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setTo(emailTo);
-        mensaje.setSubject(asunto);
-        mensaje.setText(cuerpo);
-        mensaje.setFrom(email);
-
-        mailSender.send(mensaje);
     }
 }
