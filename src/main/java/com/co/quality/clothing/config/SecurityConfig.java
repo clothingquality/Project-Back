@@ -38,9 +38,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "https://www.qualityclothingcol.com",
-                "https://www.testsitedomainparapagina.io",
+                "https://www.adminpagequalitycol.shop",
                 "https://qualityclothingcol.com",
-                "https://testsitedomainparapagina.io",
+                "https://adminpagequalitycol.shop",
                 "http://127.0.0.1:5500",
                 "http://127.0.0.1:5502"
         ));
